@@ -25,22 +25,29 @@ export default function Playground() {
     <SandpackProvider template="react">
       <SandpackLayout>
         <SandpackFileExplorer />
-        <MonacoEditor />
-        <div>
-          <SandpackPreview
-            style={{
-              width: "30vw",
-              height: "60%",
-              border: "1px solid #339af0",
-            }}
-          />
-          <SandpackConsole
-            style={{
-              width: "30vw",
-              height: "40%",
-              border: "1px solid #fcc419",
-            }}
-          />
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "50% 50%",
+          }}
+        >
+          <MonacoEditor />
+          <div>
+            <SandpackPreview
+              style={{
+                width: "30vw",
+                height: "60%",
+                border: "1px solid #339af0",
+              }}
+            />
+            <SandpackConsole
+              style={{
+                width: "30vw",
+                height: "40%",
+                border: "1px solid #fcc419",
+              }}
+            />
+          </div>
         </div>
       </SandpackLayout>
     </SandpackProvider>
