@@ -1,8 +1,14 @@
 import React from "react";
 import Playground from "./Playground.jsx";
-import AuthUI from "./components/AuthUI.jsx";
+//import AuthUI from "./components/auth/AuthUI.jsx";
+import { AuthProvider } from "./components/auth/AuthContext.jsx";
 export default function App() {
-  return <Playground />;
+  return (
+    <AuthProvider>
+      <Playground />;
+    </AuthProvider>
+  );
+
   // return <AuthUI />;
   // return (
   //   <main>

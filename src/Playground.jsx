@@ -12,6 +12,7 @@ import { SandpackFileExplorer } from "sandpack-file-explorer";
 import Editor from "@monaco-editor/react";
 
 import MonacoEditor from "./MonacoEditor";
+import ToolBar from "./components/auth/ToolBar";
 
 export default function Playground() {
   return (
@@ -28,6 +29,7 @@ export default function Playground() {
         <div
           style={{ display: "flex", flexDirection: "column", width: "30vw" }}
         >
+          <ToolBar />
           <SandpackPreview
             style={{
               border: "1px solid #339af0",

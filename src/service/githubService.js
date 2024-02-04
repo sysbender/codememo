@@ -1,9 +1,4 @@
-//const { Octokit } = require("octokit");
 import { Octokit } from "octokit";
-
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEY,
-});
 
 let counter = 0;
 const owner = "sysbender";
@@ -16,8 +11,28 @@ const author = {
 const url = "/repos/{owner}/{repo}/{path}"; // leave this as is
 const ref = "heads/master"; // 'master' represents the name of my primary branch
 
-// ----------------------push
+// check user
+async function ghConnect(personalToken) {
+  const octokit = new Octokit({
+    auth: personalToken,
+  });
 
+  try {
+    const res = await octokit.request("GET /user");
+    console.log("=============res:", res);
+
+    const {
+      data: { login, name },
+    } = res;
+
+    return { login, name, octokit };
+    console.log(` auth as ${user.login}  ${user.name}`);
+  } catch (error) {
+    console.log(` Github connect error `, error.message);
+    return null;
+  }
+}
+// ----------------------push
 async function pushContents() {
   const commits = await octokit.request("GET /repos/{owner}/{repo}/commits", {
     owner,
@@ -76,10 +91,6 @@ export async function getProjectFiles(
   contentFiles,
   externalUrls
 ) {
-  counter += 1;
-  if (counter > 20) {
-    throw new Error("over 10 times @@@@@@@@@@@@@@@@@@@@@@@@@@@");
-  }
   const contentFileExtensions = ["html", "js", "css", "jsx"];
   const extternalFileExtensions = ["png", "jpg", "ico"];
   //react-complete-guide-course-resources/code/03 React Essentials/01-starting-project/
@@ -139,14 +150,4 @@ export async function getProjectFiles(
   }
 }
 
-async function run() {
-  //getContents();
-  //pushContents();
-
-  const repo = "react-complete-guide-course-resources";
-  const p = "code/03 React Essentials/01-starting-project";
-  const contentFiles = [],
-    externalUrls = [];
-  getProjectFiles(owner, repo, p, p, contentFiles, externalUrls);
-  console.log("==============contentFiles", contentFiles);
-}
+export { ghConnect };
