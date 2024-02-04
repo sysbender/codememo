@@ -96,7 +96,7 @@ async function getProjectFiles(
   if (counter > 20) {
     throw new Error("over 10 times @@@@@@@@@@@@@@@@@@@@@@@@@@@");
   }
-  const contentFileExtensions = ["html", "js", "css", "jsx"];
+  const contentFileExtensions = ["html", "js", "css", "jsx", "json"];
   const extternalFileExtensions = ["png", "jpg", "ico"];
   //react-complete-guide-course-resources/code/03 React Essentials/01-starting-project/
   // function btoa(content) {
@@ -144,15 +144,13 @@ async function getProjectFiles(
       console.log("ext=============", ext);
       if (contentFileExtensions.indexOf(ext) !== -1) {
         console.log(`relative path from = ${filePath}, to=${projectRoot}`);
-        const relative = filePath.substring(projectRoot.length + 1);
-        contentFiles.push({ relative, content: btoa(content) }); //,
-        console.log("==================push files", contentFiles);
+        const relative = filePath.substring(projectRoot.length); // start with '/'
+        //contentFiles.push({ relative, content: btoa(content) }); //,
+        contentFiles[relative] = { code: atob(content) }; //,
       } else if (extternalFileExtensions.indexOf(ext) !== -1) {
-        const relative = filePath.substring(projectRoot.length + 1);
-        externalUrls.push({ relative, download_url }); //,
+        const relative = filePath.substring(projectRoot.length);
+        externalUrls[relative] = { url: download_url }; //,
       }
-
-      // if(data.name)
     }
 
     // 1.folder 2. img file 3. other file
@@ -171,11 +169,12 @@ async function loadProject(octokit, url) {
   const [, owner, repo, tree, branch, ...rest] = pathname
     .split("/")
     .map((value) => decodeURIComponent(value));
-  const files = [],
-    urls = [];
+  const files = {};
+  const urls = {};
   const path = rest.join("/");
   console.log({ octokit, owner, repo, path, path, files, urls });
   await getProjectFiles(octokit, owner, repo, path, path, files, urls);
+  console.log("@@@@@@files = ", files);
   return {
     files,
     urls,

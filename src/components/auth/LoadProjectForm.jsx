@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useAuth } from "./AuthContext";
 import { getProjectFiles, loadProject } from "../../service/githubService";
 
-export default function LoadProjectForm() {
+import { customSetupFactory } from "../../service/customSetupFactory";
+export default function LoadProjectForm({ setCustomSetup }) {
   const [projectUrl, setProjectUrl] = useState("");
   const { connection } = useAuth();
 
@@ -30,7 +31,10 @@ export default function LoadProjectForm() {
     //   externalUrls
     // );
     const { files, urls } = await loadProject(connection.octokit, projectUrl);
-    console.log("files, urls", files.length, urls.length);
+
+    const custom = customSetupFactory({ files, urls });
+    console.log("custom=", custom);
+    setCustomSetup(custom);
   }
   return (
     <form onSubmit={submitHandler}>
@@ -41,7 +45,9 @@ export default function LoadProjectForm() {
         value={projectUrl}
         onChange={(e) => setProjectUrl(e.target.value)}
       />
-      <button style={{ marginLeft: "8px" }}>Load</button>
+      <button type="submit" style={{ marginLeft: "8px" }}>
+        Load
+      </button>
     </form>
   );
 }

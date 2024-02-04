@@ -3,7 +3,7 @@ import LoginForm from "./LoginForm";
 import LoadProjectForm from "./LoadProjectForm";
 import Logout from "./Logout";
 import { useAuth } from "./AuthContext";
-export default function ToolBar() {
+export default function ToolBar({ setCustomSetup }) {
   const { isAuthenticated } = useAuth();
   return (
     <div
@@ -19,7 +19,7 @@ export default function ToolBar() {
     >
       {isAuthenticated ? (
         <>
-          <Logout /> <LoadProjectForm />
+          <Logout /> <LoadProjectForm setCustomSetup={setCustomSetup} />
         </>
       ) : (
         <LoginForm />
