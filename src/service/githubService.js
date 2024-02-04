@@ -83,7 +83,8 @@ async function pushContents() {
 
 // get content of folder
 
-export async function getProjectFiles(
+async function getProjectFiles(
+  octokit,
   owner,
   repo,
   projectRoot,
@@ -91,12 +92,16 @@ export async function getProjectFiles(
   contentFiles,
   externalUrls
 ) {
+  counter += 1;
+  if (counter > 20) {
+    throw new Error("over 10 times @@@@@@@@@@@@@@@@@@@@@@@@@@@");
+  }
   const contentFileExtensions = ["html", "js", "css", "jsx"];
   const extternalFileExtensions = ["png", "jpg", "ico"];
   //react-complete-guide-course-resources/code/03 React Essentials/01-starting-project/
-  function btoa(content) {
-    return Buffer.from(content, "base64").toString();
-  }
+  // function btoa(content) {
+  //   return Buffer.from(content, "base64").toString();
+  // }
   function getExtension(filePath) {
     const index = filePath.lastIndexOf(".");
     if (index > 0) {
@@ -123,6 +128,7 @@ export async function getProjectFiles(
       for (const item of data) {
         console.log("process folder==============", item.path);
         await getProjectFiles(
+          octokit,
           owner,
           repo,
           projectRoot,
@@ -139,15 +145,40 @@ export async function getProjectFiles(
       if (contentFileExtensions.indexOf(ext) !== -1) {
         console.log(`relative path from = ${filePath}, to=${projectRoot}`);
         const relative = filePath.substring(projectRoot.length + 1);
-        contentFiles.push(relative, btoa(content)); //,
+        contentFiles.push({ relative, content: btoa(content) }); //,
         console.log("==================push files", contentFiles);
+      } else if (extternalFileExtensions.indexOf(ext) !== -1) {
+        const relative = filePath.substring(projectRoot.length + 1);
+        externalUrls.push({ relative, download_url }); //,
       }
 
       // if(data.name)
     }
+
+    // 1.folder 2. img file 3. other file
   } catch (error) {
     console.error(error.message);
+    // console.error(
+    //   `Error! Status: ${error.status}. Message: ${error.response.data.message}`
+    // );
   }
 }
 
-export { ghConnect };
+async function loadProject(octokit, url) {
+  //   * https://github.com/sysbender/react-complete-guide-course-resources/tree/main/code/05%20Essentials%20Practice/01-starting-project
+  const urlObject = new URL(url);
+  const pathname = urlObject.pathname;
+  const [, owner, repo, tree, branch, ...rest] = pathname
+    .split("/")
+    .map((value) => decodeURIComponent(value));
+  const files = [],
+    urls = [];
+  const path = rest.join("/");
+  console.log({ octokit, owner, repo, path, path, files, urls });
+  await getProjectFiles(octokit, owner, repo, path, path, files, urls);
+  return {
+    files,
+    urls,
+  };
+}
+export { ghConnect, getProjectFiles, loadProject };
