@@ -92,10 +92,10 @@ async function getProjectFiles(
   contentFiles,
   externalUrls
 ) {
-  counter += 1;
-  if (counter > 20) {
-    throw new Error("over 10 times @@@@@@@@@@@@@@@@@@@@@@@@@@@");
-  }
+  // counter += 1;
+  // if (counter > 99) {
+  //   throw new Error("over 99 times @@@@@@@@@@@@@@@@@@@@@@@@@@@");
+  // }
   const contentFileExtensions = ["html", "js", "css", "jsx", "json"];
   const extternalFileExtensions = ["png", "jpg", "ico"];
   //react-complete-guide-course-resources/code/03 React Essentials/01-starting-project/
@@ -150,6 +150,7 @@ async function getProjectFiles(
       } else if (extternalFileExtensions.indexOf(ext) !== -1) {
         const relative = filePath.substring(projectRoot.length);
         externalUrls[relative] = { url: download_url }; //,
+        contentFiles[relative] = { code: "//image placeholder" }; //
       }
     }
 

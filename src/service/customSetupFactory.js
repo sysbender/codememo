@@ -111,22 +111,22 @@ function customSetupFactory({ files, urls = {} }) {
   let customSetup = {};
   const entry = getEntry(files);
   if (entry) {
-    customSetup = { ...customSetup, entry };
+    customSetup["entry"] = entry;
   }
 
-  const environment = getEnvironment(files);
-  if (environment) {
-    customSetup = {
-      ...customSetup,
-      environment,
-    };
-  }
+  // const environment = getEnvironment(files);
+  // if (environment) {
+  //   customSetup = {
+  //     ...customSetup,
+  //     environment,
+  //   };
+  // }
 
   const dependencies = getDependencies(files);
-  customSetup = { ...customSetup, dependencies };
+  customSetup["dependencies"] = dependencies;
 
-  customSetup = { ...customSetup, files };
-  return { customSetup };
+  // customSetup = { ...customSetup, files };
+  return customSetup;
 }
 
 export default setupReact;

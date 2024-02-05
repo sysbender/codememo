@@ -3,7 +3,7 @@ import { useAuth } from "./AuthContext";
 import { getProjectFiles, loadProject } from "../../service/githubService";
 
 import { customSetupFactory } from "../../service/customSetupFactory";
-export default function LoadProjectForm({ setCustomSetup }) {
+export default function LoadProjectForm({ setConfig }) {
   const [projectUrl, setProjectUrl] = useState("");
   const { connection } = useAuth();
 
@@ -30,11 +30,48 @@ export default function LoadProjectForm({ setCustomSetup }) {
     //   contentFiles,
     //   externalUrls
     // );
-    const { files, urls } = await loadProject(connection.octokit, projectUrl);
 
+    const { files, urls } = await loadProject(connection.octokit, projectUrl);
     const custom = customSetupFactory({ files, urls });
+    const custom0 = {
+      entry: "/src/index.jsx",
+      dependencies: {
+        react: "^18.0.0",
+        "react-dom": "^18.0.0",
+      },
+    };
+    const custom1 = {
+      entry: "/src/index.jsx",
+      dependencies: {
+        react: "^18.0.0",
+        "react-dom": "^18.0.0",
+      },
+    };
+
+    const toRemove = [
+      "/package.json",
+      "/package-lock.json",
+      "/vite.config.js",
+      "/vite.config.ts",
+    ];
+
+    for (const k of Object.keys(files)) {
+      if (toRemove.indexOf(k) !== -1) {
+        delete files[k];
+      }
+      // if (k === "/src/index.jsx") {
+      //   const code = { ...files[k] };
+      //   delete files[k];
+      //   files["/src/index.js"] = code;
+      //   custom.entry = "/src/index.js";
+      // }
+    }
     console.log("custom=", custom);
-    setCustomSetup(custom);
+    const files1 = setConfig({
+      customSetup: custom,
+      files,
+      template: "react",
+    });
   }
   return (
     <form onSubmit={submitHandler}>
