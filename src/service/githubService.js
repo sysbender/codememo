@@ -81,12 +81,41 @@ async function pushContents() {
   );
 }
 
+// util function : https://github.com/octokit/core.js/issues/535
+
+/**
+ *  searchpath = a/b/c
+ *
+ *  {part1}/{part2}/{part3}
+ *
+ *  {
+ *      part1:"a",
+ *      part2:"b",
+ *      part3:"c"
+ *  }
+ */
+function splitPath(path) {
+  let partsName = [];
+  let partsObj = {};
+  let parts = path.split("/");
+  for (const [index, partValue] of Object.entries(parts)) {
+    const partName = `part${index}`;
+    partsObj[partName] = partValue;
+    partsName.push(partName);
+  }
+
+  const partsStr = partsName.map((value) => `{${value}}`).join("/");
+
+  return { partsStr, partsObj };
+}
+
 // get content of folder
 
 async function getProjectFiles(
   octokit,
   owner,
   repo,
+  branch,
   projectRoot,
   searchPath,
   contentFiles,
@@ -110,18 +139,23 @@ async function getProjectFiles(
     return "";
   }
   try {
-    const { data } = await octokit.request(
-      "GET /repos/{owner}/{repo}/contents/{path}",
-      {
-        owner,
-        repo, //: "react-complete-guide-course-resources",
-        path: searchPath, //"code/03 React Essentials/01-starting-project/src/assets",
-        headers: {
-          "X-GitHub-Api-Version": "2022-11-28",
-          accept: "application/vnd.github+json",
-        },
-      }
+    console.log("searchpath = ", searchPath);
+    const pathParts = splitPath(searchPath);
+
+    const requestName = "GET /repos/{owner}/{repo}/contents/".concat(
+      pathParts.partsStr
     );
+    const requestValue = {
+      ...pathParts.partsObj,
+      owner,
+      repo, //: "react-complete-guide-course-resources",
+      ref: `refs/heads/${branch}`,
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+        accept: "application/vnd.github+json",
+      },
+    };
+    const { data } = await octokit.request(requestName, requestValue);
     // console.log(data);
     if (Array.isArray(data)) {
       console.log("data=======", data);
@@ -131,6 +165,7 @@ async function getProjectFiles(
           octokit,
           owner,
           repo,
+          branch,
           projectRoot,
           item.path,
           contentFiles,
@@ -174,7 +209,7 @@ async function loadProject(octokit, url) {
   const urls = {};
   const path = rest.join("/");
   console.log({ octokit, owner, repo, path, path, files, urls });
-  await getProjectFiles(octokit, owner, repo, path, path, files, urls);
+  await getProjectFiles(octokit, owner, repo, branch, path, path, files, urls);
   console.log("@@@@@@files = ", files);
   return {
     files,

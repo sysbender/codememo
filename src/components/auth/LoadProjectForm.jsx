@@ -31,6 +31,7 @@ export default function LoadProjectForm({ setConfig }) {
     //   externalUrls
     // );
 
+    console.log(" projectUrl = ", projectUrl);
     const { files, urls } = await loadProject(connection.octokit, projectUrl);
     const custom = customSetupFactory({ files, urls });
     const custom0 = {
