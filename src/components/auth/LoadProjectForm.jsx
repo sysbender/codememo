@@ -66,12 +66,19 @@ export default function LoadProjectForm({ setConfig }) {
       //   custom.entry = "/src/index.js";
       // }
     }
-    console.log("custom=", custom);
-    const files1 = setConfig({
+
+    let config = {
       customSetup: custom,
       files,
       template: "react",
-    });
+    };
+
+    config["options"] = {
+      externalResources: ["https://cdn.tailwindcss.com"],
+    };
+
+    console.log("config=", config);
+    const files1 = setConfig(config);
   }
   return (
     <form onSubmit={submitHandler}>

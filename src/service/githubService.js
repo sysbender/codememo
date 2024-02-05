@@ -114,7 +114,7 @@ async function getProjectFiles(
       "GET /repos/{owner}/{repo}/contents/{path}",
       {
         owner,
-        repo: "react-complete-guide-course-resources",
+        repo, //: "react-complete-guide-course-resources",
         path: searchPath, //"code/03 React Essentials/01-starting-project/src/assets",
         headers: {
           "X-GitHub-Api-Version": "2022-11-28",

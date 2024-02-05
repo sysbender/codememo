@@ -76,8 +76,9 @@ return (
    */
   return (
     <SandpackProvider
-      customSetup={config.customSetup}
-      files={config.files}
+      {...config}
+      // customSetup={config.customSetup}
+      // files={config.files}
       // template={config.template}
       options={{
         externalResources: ["https://cdn.tailwindcss.com"],
@@ -99,14 +100,14 @@ return (
           <SandpackPreview
             style={{
               border: "1px solid #339af0",
-              height: "50vh",
+              height: "70vh",
               width: "100%",
             }}
           />
           <SandpackConsole
             style={{
               border: "1px solid #fcc419",
-              height: "30vh",
+              height: "20vh",
               width: "100%",
             }}
           />
