@@ -181,11 +181,11 @@ async function getProjectFiles(
         console.log(`relative path from = ${filePath}, to=${projectRoot}`);
         const relative = filePath.substring(projectRoot.length); // start with '/'
         //contentFiles.push({ relative, content: btoa(content) }); //,
-        contentFiles[relative] = { code: atob(content) }; //,
+        contentFiles[relative] = { code: atob(content), hidden: true }; //,
       } else if (extternalFileExtensions.indexOf(ext) !== -1) {
         const relative = filePath.substring(projectRoot.length);
         externalUrls[relative] = { url: download_url }; //,
-        contentFiles[relative] = { code: "//image placeholder" }; //
+        contentFiles[relative] = { code: "//image placeholder", hidden: true }; //
       }
     }
 
